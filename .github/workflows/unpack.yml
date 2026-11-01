@@ -1,0 +1,26 @@
+# Publishes the demo: the built site is uploaded as zip parts into upload/, this unpacks it into the
+# repository root (served by GitHub Pages) and removes the parts. Source: the private utsaav-studio
+# repository, `npm run demo:build`.
+name: Publish demo site
+on:
+  push:
+    paths: ["upload/**"]
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Unpack the uploaded site into the repository root
+        run: |
+          set -e
+          cat upload/site.zip.part-* > /tmp/site.zip
+          unzip -tq /tmp/site.zip
+          find . -mindepth 1 -maxdepth 1 ! -name .git ! -name .github ! -name README.md -exec rm -rf {} +
+          unzip -oq /tmp/site.zip -d .
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -qm "Publish the demo site"
+          git push
