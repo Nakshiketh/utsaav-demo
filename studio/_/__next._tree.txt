@@ -1,7 +1,7 @@
-:HL["/utsaav-demo/_next/static/chunks/0-_np8rpdgt2c.css","style"]
+:HL["/utsaav-stone-art/_next/static/chunks/2r_dq37b2q215.css","style"]
 :HC["/",""]
 4:[["children",{"s":"__PAGE__","h":160}]]
 3:[["children",{"s":{"n":"id","t":"d","k":"_","s":[]},"h":96,"c":"$Q4"}]]
 2:[["children",{"s":"studio","h":96,"c":"$Q3"}]]
 1:[["children",{"s":"(app)","h":96,"c":"$Q2"}]]
-0:{"b":"rJjOUTrQ3NZPRfIxSgOBE","t":{"t":{"s":"","h":80,"c":"$Q1"}}}
+0:{"b":"ERKKD4V_feikEprfL2q5I","t":{"t":{"s":"","h":80,"c":"$Q1"}}}

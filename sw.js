@@ -1,9 +1,9 @@
-/* Utsaav Studio online demo — service worker.
+/* Utsaav Stone Art Studio online — service worker.
  * The studio's server runs inside the open page (see src/demo/backend.ts). This worker:
  *  - sends requests for /api/…, share-page images and the print view to that page and returns its answer;
  *  - serves pages with an id in the address (e.g. /projects/abc) from their pre-built template.
  */
-const BASE = "/utsaav-demo";
+const BASE = "/utsaav-stone-art";
 const DYNAMIC = ["/compare/[projectId]","/library/[id]","/projects/[id]","/quotes/[id]","/studio/[id]","/try-on/[wallId]","/s/[token]"]; // e.g. ["/projects/[id]", …]
 const STATIC = new Set(["/dashboard","/elements","/library","/materials","/onboarding","/projects","/quotes/new","/quotes","/settings/account","/settings/ai","/settings/members","/settings","/settings/rates","/try-on","/upload","/login","/signup","/"]); // e.g. ["/projects", "/quotes/new", …]
 const BACKEND = [/^\/api\//, /^\/s\/[^/]+\/(logo|quote|img\/[^/]+|wall\/[^/]+)$/, /^\/quotes\/[^/]+\/print$/];
@@ -24,7 +24,7 @@ function ping(client) {
       alive.set(client.id, true);
       resolve(true);
     };
-    client.postMessage({ type: "demo-ping" }, [ch.port2]);
+    client.postMessage({ type: "studio-ping" }, [ch.port2]);
   });
 }
 
@@ -42,20 +42,20 @@ async function forward(event) {
   const client = await backendClient(event.clientId);
   if (!client) {
     return new Response(
-      `<!doctype html><meta name="viewport" content="width=device-width"><title>Utsaav Studio demo</title><body style="font-family:system-ui;padding:32px;max-width:520px;margin:auto"><h1>Open the demo first</h1><p>This link belongs to the Utsaav Studio online demo, which runs inside an open demo tab. <a href="${BASE}/">Open the demo</a>.</p>`,
+      `<!doctype html><meta name="viewport" content="width=device-width"><title>Utsaav Stone Art Studio</title><body style="font-family:system-ui;padding:32px;max-width:520px;margin:auto"><h1>Open the studio first</h1><p>This link opens inside the Utsaav Stone Art Studio. <a href="${BASE}/">Open the studio</a>.</p>`,
       { status: 503, headers: { "Content-Type": "text/html; charset=utf-8" } },
     );
   }
   const body = req.method === "GET" || req.method === "HEAD" ? null : await req.arrayBuffer();
   const ch = new MessageChannel();
   const answer = new Promise((resolve, reject) => {
-    const t = setTimeout(() => reject(new Error("The demo page didn't answer.")), 180000);
+    const t = setTimeout(() => reject(new Error("The studio didn't answer.")), 180000);
     ch.port1.onmessage = (m) => {
       clearTimeout(t);
       resolve(m.data);
     };
   });
-  client.postMessage({ type: "demo-request", url: req.url, method: req.method, headers: [...req.headers.entries()], body }, body ? [ch.port2, body] : [ch.port2]);
+  client.postMessage({ type: "studio-request", url: req.url, method: req.method, headers: [...req.headers.entries()], body }, body ? [ch.port2, body] : [ch.port2]);
   try {
     const r = await answer;
     const empty = [101, 204, 205, 304].includes(r.status);
